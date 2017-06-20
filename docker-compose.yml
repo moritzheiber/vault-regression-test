@@ -1,0 +1,17 @@
+version: '2.2'
+services:
+  vault:
+    image: "vault:${VERSION:-0.7.3}"
+    init: true
+    entrypoint: /bin/sh
+    command: -c "vault server -dev -dev-root-token-id=\"root_token\" -dev-listen-address=\"0.0.0.0:8200\" -log-level=debug"
+    ports:
+      - "8200:8200"
+    user: root
+  service:
+    init: true
+    image: test-service
+    links:
+      - vault
+    environment:
+      - "VAULT_TOKEN=child_token"

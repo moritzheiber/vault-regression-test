@@ -1,0 +1,17 @@
+# vim: set ft=dockerfile
+FROM alpine:3.6
+
+ENV CONSUL_TEMPLATE_VERSION="0.18.5" \
+  CONSUL_TEMPLATE_SHA256="b0cd6e821d6150c9a0166681072c12e906ed549ef4588f73ed58c9d834295cd2"
+
+RUN apk --no-cache add curl ca-certificates && \
+  curl -o /tmp/consul-template.zip -L https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip && \
+  echo "${CONSUL_TEMPLATE_SHA256}  /tmp/consul-template.zip" | sha256sum -c && \
+  unzip /tmp/consul-template.zip -d /usr/bin/ && \
+  rm -f /tmp/consul-template.zip && \
+  apk del --purge curl
+
+ADD config/config.hcl /config.hcl
+ADD config/certs.json.ctmpl /certs.json.ctmpl
+
+CMD ["consul-template","-config=config.hcl","-log-level=debug"]
