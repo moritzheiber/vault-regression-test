@@ -32,7 +32,7 @@ resource "vault_generic_secret" "test_role" {
     "server_flag": true,
     "client_flag": false,
     "ttl": "30m",
-    "key_bits": 4096,
+    "key_bits": 4096
   }
 EOF
 }
